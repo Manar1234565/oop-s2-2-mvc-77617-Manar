@@ -1,0 +1,33 @@
+﻿@model FoodSafetyTracker.Domain.Inspection
+
+<h2>Create Inspection</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="form-group">
+        <label>Premises</label>
+        <select asp-for="PremisesId" class="form-control">
+            <option value="">-- Select Premises --</option>
+            @foreach (var p in ViewBag.Premises)
+            {
+                <option value="@p.Id">@p.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Score</label>
+        <input asp-for="Score" class="form-control" min="0" max="99" />
+        <span asp-validation-for="Score" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Date</label>
+        <input asp-for="InspectionDate" type="date" class="form-control" />
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+</form>

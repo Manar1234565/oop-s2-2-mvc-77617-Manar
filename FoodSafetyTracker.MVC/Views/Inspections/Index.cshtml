@@ -1,0 +1,39 @@
+﻿@model List<FoodSafetyTracker.Domain.Inspection>
+
+<h2>Inspections</h2>
+
+<!-- 🛠 BOTÓN CREATE SOLO Admin + Inspector -->
+@if (User.IsInRole("Admin") || User.IsInRole("Inspector"))
+{
+    <a class="btn btn-primary mb-3" href="/Inspections/Create">Create Inspection</a>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Premises</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Outcome</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td>@i.Premises.Name</td>
+                <td>@i.InspectionDate.ToShortDateString()</td>
+                <td>@i.Score</td>
+                <td>@i.Outcome</td>
+                <td>
+                    <!-- 👑 SOLO ADMIN puede borrar -->
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-danger btn-sm" href="/Inspections/Delete/@i.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,15 @@
+﻿@model FoodSafetyTracker.MVC.Models.DashboardViewModel
+
+<h2>Dashboard</h2>
+
+<form method="get">
+    <input type="text" name="town" placeholder="Town" value="@Model.TownFilter" />
+    <input type="text" name="risk" placeholder="Risk" value="@Model.RiskFilter" />
+    <button type="submit">Filter</button>
+</form>
+
+<hr />
+
+<p><strong>Inspections this month:</strong> @Model.InspectionsThisMonth</p>
+<p><strong>Failed inspections:</strong> @Model.FailedInspectionsThisMonth</p>
+<p><strong>Overdue follow-ups:</strong> @Model.OverdueFollowUps</p>

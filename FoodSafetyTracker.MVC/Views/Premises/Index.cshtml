@@ -1,0 +1,25 @@
+﻿@model List<FoodSafetyTracker.Domain.Premises>
+
+<h2>Premises</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Town</th>
+            <th>Risk</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Address</td>
+                <td>@p.Town</td>
+                <td>@p.RiskRating</td>
+            </tr>
+        }
+    </tbody>
+</table>

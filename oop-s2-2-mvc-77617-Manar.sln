@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.37012.4 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodSafetyTracker.MVC", "FoodSafetyTracker.MVC\FoodSafetyTracker.MVC.csproj", "{E0DFE3EF-0BE4-4E79-8DDB-172FF2B85CBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodSafetyTracker.Domain", "FoodSafetyTracker.Domain\FoodSafetyTracker.Domain.csproj", "{C83BF60C-1467-43F9-BED2-ECD8A885CA45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodSafetyTracker.Tests", "FoodSafetyTracker.Tests\FoodSafetyTracker.Tests.csproj", "{8F37B7AD-EF34-465E-BC31-0274E53C0975}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{E0DFE3EF-0BE4-4E79-8DDB-172FF2B85CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0DFE3EF-0BE4-4E79-8DDB-172FF2B85CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0DFE3EF-0BE4-4E79-8DDB-172FF2B85CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C83BF60C-1467-43F9-BED2-ECD8A885CA45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C83BF60C-1467-43F9-BED2-ECD8A885CA45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C83BF60C-1467-43F9-BED2-ECD8A885CA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C83BF60C-1467-43F9-BED2-ECD8A885CA45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F37B7AD-EF34-465E-BC31-0274E53C0975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F37B7AD-EF34-465E-BC31-0274E53C0975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F37B7AD-EF34-465E-BC31-0274E53C0975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F37B7AD-EF34-465E-BC31-0274E53C0975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
