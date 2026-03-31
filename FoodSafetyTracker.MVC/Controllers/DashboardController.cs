@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FoodSafetyTracker.MVC.Controllers
 {
-    [Authorize] // 🔥 FALTA ESTO
+    [Authorize]
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;
@@ -30,31 +30,48 @@ namespace FoodSafetyTracker.MVC.Controllers
                 .Include(i => i.Premises)
                 .AsQueryable();
 
+            // 🔍 FILTERS
             if (!string.IsNullOrEmpty(town))
             {
-                _logger.LogInformation($"Filtering by town: {town}");
+                _logger.LogInformation("Filtering by town: {Town}", town);
                 inspections = inspections.Where(i => i.Premises.Town == town);
             }
 
             if (!string.IsNullOrEmpty(risk))
             {
-                _logger.LogInformation($"Filtering by risk: {risk}");
+                _logger.LogInformation("Filtering by risk: {Risk}", risk);
                 inspections = inspections.Where(i => i.Premises.RiskRating == risk);
             }
 
-            var inspectionsThisMonth = await inspections
-                .CountAsync(i => i.InspectionDate >= startOfMonth);
+            // 🔥 REPORTING STYLE (single dataset)
+            var filteredInspections = await inspections.ToListAsync();
 
-            var failedInspections = await inspections
-                .CountAsync(i => i.InspectionDate >= startOfMonth && i.Outcome == "Fail");
+            var inspectionsThisMonth = filteredInspections
+                .Count(i => i.InspectionDate >= startOfMonth);
 
-            var overdueFollowUps = await _context.FollowUps
-                .Include(f => f.Inspection)
-                .ThenInclude(i => i.Premises)
+            var failedInspections = filteredInspections
+                .Count(i => i.InspectionDate >= startOfMonth && i.Outcome == "Fail");
+
+            var followUpsQuery = _context.FollowUps
+    .Include(f => f.Inspection)
+    .ThenInclude(i => i.Premises)
+    .AsQueryable();
+
+            //  TOWN
+            if (!string.IsNullOrEmpty(town))
+            {
+                followUpsQuery = followUpsQuery
+                    .Where(f => f.Inspection.Premises.Town == town);
+            }
+
+            // OVERDUE COUNT
+            var overdueFollowUps = await followUpsQuery
                 .Where(f => f.Status == "Open" && f.DueDate < DateTime.Now)
                 .CountAsync();
 
-            _logger.LogInformation($"Dashboard stats - Inspections: {inspectionsThisMonth}, Failed: {failedInspections}, Overdue: {overdueFollowUps}");
+            _logger.LogInformation(
+                "Dashboard stats - Inspections: {Inspections}, Failed: {Failed}, Overdue: {Overdue}",
+                inspectionsThisMonth, failedInspections, overdueFollowUps);
 
             var model = new DashboardViewModel
             {
@@ -62,8 +79,12 @@ namespace FoodSafetyTracker.MVC.Controllers
                 FailedInspectionsThisMonth = failedInspections,
                 OverdueFollowUps = overdueFollowUps,
                 TownFilter = town,
-                RiskFilter = risk
+                
             };
+            ViewBag.Towns = await _context.Premises
+    .Select(p => p.Town)
+    .Distinct()
+    .ToListAsync();
 
             return View(model);
         }

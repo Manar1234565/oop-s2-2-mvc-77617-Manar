@@ -2,14 +2,60 @@
 
 <h2>Dashboard</h2>
 
-<form method="get">
-    <input type="text" name="town" placeholder="Town" value="@Model.TownFilter" />
-    <input type="text" name="risk" placeholder="Risk" value="@Model.RiskFilter" />
+<!-- 🔍 FILTERS -->
+<form method="get" class="mb-3">
+
+    <select name="town">
+        <option value="">All Towns</option>
+
+        @foreach (var t in ViewBag.Towns)
+        {
+            if (t == Model.TownFilter)
+            {
+                <option value="@t" selected>@t</option>
+            }
+            else
+            {
+                <option value="@t">@t</option>
+            }
+        }
+
+    </select>
+
     <button type="submit">Filter</button>
+
 </form>
+
+<!-- 🔥 FILTER INFO (IMPORTANTE PARA EL PROFE) -->
+<p>
+    <strong>Filters applied:</strong>
+    Town = @(string.IsNullOrEmpty(Model.TownFilter) ? "All" : Model.TownFilter)
+</p>
 
 <hr />
 
-<p><strong>Inspections this month:</strong> @Model.InspectionsThisMonth</p>
-<p><strong>Failed inspections:</strong> @Model.FailedInspectionsThisMonth</p>
-<p><strong>Overdue follow-ups:</strong> @Model.OverdueFollowUps</p>
+<!-- 📊 METRICS (VISUAL) -->
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3 text-center">
+            <h5>Inspections this month</h5>
+            <h2>@Model.InspectionsThisMonth</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3 text-center">
+            <h5>Failed inspections</h5>
+            <h2 class="text-danger">@Model.FailedInspectionsThisMonth</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3 text-center">
+            <h5>Overdue follow-ups</h5>
+            <h2 class="text-warning">@Model.OverdueFollowUps</h2>
+        </div>
+    </div>
+
+</div>

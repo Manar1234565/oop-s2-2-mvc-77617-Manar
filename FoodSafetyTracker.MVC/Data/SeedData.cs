@@ -50,6 +50,44 @@ namespace FoodSafetyTracker.MVC.Data
             }
 
             // =========================
+            // 👤 INSPECTOR USER
+            // =========================
+            var inspectorEmail = "inspector@test.com";
+            var inspectorUser = await userManager.FindByEmailAsync(inspectorEmail);
+
+            if (inspectorUser == null)
+            {
+                var user = new IdentityUser
+                {
+                    UserName = inspectorEmail,
+                    Email = inspectorEmail,
+                    EmailConfirmed = true
+                };
+
+                await userManager.CreateAsync(user, "Inspector123!");
+                await userManager.AddToRoleAsync(user, "Inspector");
+            }
+
+            // =========================
+            // 👤 VIEWER USER
+            // =========================
+            var viewerEmail = "viewer@test.com";
+            var viewerUser = await userManager.FindByEmailAsync(viewerEmail);
+
+            if (viewerUser == null)
+            {
+                var user = new IdentityUser
+                {
+                    UserName = viewerEmail,
+                    Email = viewerEmail,
+                    EmailConfirmed = true
+                };
+
+                await userManager.CreateAsync(user, "Viewer123!");
+                await userManager.AddToRoleAsync(user, "Viewer");
+            }
+
+            // =========================
             // 🟢 PREMISES
             // =========================
             var premises = new List<Premises>

@@ -1,0 +1,50 @@
+﻿@model List<FoodSafetyTracker.Domain.FollowUp>
+<a asp-action="Create" class="btn btn-primary mb-3">+ Add Follow-Up</a>
+<h2>Follow-Ups</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Premises</th>
+            <th>Inspection Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Closed Date</th>
+            <th>Overdue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var f in Model)
+        {
+            var isOverdue = f.Status == "Open" && f.DueDate < DateTime.Now;
+
+            <tr class="@(isOverdue ? "table-danger" : "")">
+                <td>@f.Inspection.Premises.Name</td>
+                <td>@f.Inspection.InspectionDate.ToShortDateString()</td>
+                <td>@f.DueDate.ToShortDateString()</td>
+
+                <td>
+                    @if (f.Status == "Closed")
+                    {
+                        <span class="badge bg-success">Closed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Open</span>
+                    }
+                </td>
+
+                <td>
+                    @(f.ClosedDate != null ? f.ClosedDate.Value.ToShortDateString() : "-")
+                </td>
+
+                <td>
+                    @if (isOverdue)
+                    {
+                        <span class="badge bg-danger">Overdue</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

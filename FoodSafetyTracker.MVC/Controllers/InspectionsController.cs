@@ -41,7 +41,7 @@ namespace FoodSafetyTracker.MVC.Controllers
             return View(inspection);
         }
 
-        // GET Create - show empty form
+        // GET Create
         [Authorize(Roles = "Admin,Inspector")]
         public IActionResult Create()
         {
@@ -49,17 +49,14 @@ namespace FoodSafetyTracker.MVC.Controllers
             return View();
         }
 
-        // POST Create - process the form
+        // POST Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Inspector")]
         public async Task<IActionResult> Create(Inspection inspection)
         {
-            // Remove navigation property - not sent from form
-            // causes false validation failure without this line
             ModelState.Remove("Premises");
 
-            // Business rule: Score must be between 0 and 100
             if (inspection.Score < 0 || inspection.Score > 100)
             {
                 ModelState.AddModelError("Score", "Score must be between 0 and 100");
@@ -68,15 +65,18 @@ namespace FoodSafetyTracker.MVC.Controllers
 
             if (ModelState.IsValid)
             {
+                inspection.Outcome = inspection.Score >= 50 ? "Pass" : "Fail"; 
+
                 _context.Inspections.Add(inspection);
                 await _context.SaveChangesAsync();
+
                 Log.Information(
                     "Inspection created with ID {Id} for Premises {PremisesId} by {UserName}",
                     inspection.Id, inspection.PremisesId, User.Identity!.Name);
+
                 return RedirectToAction(nameof(Index));
             }
 
-            // Log exactly which fields failed validation
             foreach (var key in ModelState.Keys)
             {
                 var state = ModelState[key];
@@ -89,22 +89,24 @@ namespace FoodSafetyTracker.MVC.Controllers
 
             Log.Warning("Inspection creation failed validation. PremisesId={PremisesId}",
                 inspection.PremisesId);
+
             ViewBag.Premises = _context.Premises.ToList();
             return View(inspection);
         }
 
-        // GET Edit - show pre-filled form
+        // GET Edit
         [Authorize(Roles = "Admin,Inspector")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
             var inspection = await _context.Inspections.FindAsync(id);
             if (inspection == null) return NotFound();
+
             ViewBag.Premises = _context.Premises.ToList();
             return View(inspection);
         }
 
-        // POST Edit - save changes
+        // POST Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Inspector")]
@@ -112,10 +114,8 @@ namespace FoodSafetyTracker.MVC.Controllers
         {
             if (id != inspection.Id) return NotFound();
 
-            // Remove navigation property - not sent from form
             ModelState.Remove("Premises");
 
-            // Business rule: Score must be between 0 and 100
             if (inspection.Score < 0 || inspection.Score > 100)
             {
                 ModelState.AddModelError("Score", "Score must be between 0 and 100");
@@ -124,10 +124,13 @@ namespace FoodSafetyTracker.MVC.Controllers
 
             if (ModelState.IsValid)
             {
+                inspection.Outcome = inspection.Score >= 50 ? "Pass" : "Fail"; // if is more than 50 will be pass, less will be fail
+
                 try
                 {
                     _context.Update(inspection);
                     await _context.SaveChangesAsync();
+
                     Log.Information(
                         "Inspection updated: Id={InspectionId} by {UserName}",
                         inspection.Id, User.Identity!.Name);
@@ -136,10 +139,13 @@ namespace FoodSafetyTracker.MVC.Controllers
                 {
                     Log.Error(ex,
                         "Concurrency error updating Inspection Id={InspectionId}", id);
+
                     if (!_context.Inspections.Any(e => e.Id == inspection.Id))
                         return NotFound();
+
                     throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -147,36 +153,42 @@ namespace FoodSafetyTracker.MVC.Controllers
             return View(inspection);
         }
 
-        // GET Delete - show confirmation page
+        // GET Delete
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
+
             var inspection = await _context.Inspections
                 .Include(i => i.Premises)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (inspection == null)
             {
                 Log.Warning("Attempt to delete non-existing inspection ID {Id}", id);
                 return NotFound();
             }
+
             return View(inspection);
         }
 
-        // POST Delete - actually delete after confirmation
+        // POST Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var inspection = await _context.Inspections.FindAsync(id);
+
             if (inspection != null)
             {
                 _context.Inspections.Remove(inspection);
                 await _context.SaveChangesAsync();
+
                 Log.Information("Inspection deleted: Id={InspectionId} by {UserName}",
                     id, User.Identity!.Name);
             }
+
             return RedirectToAction(nameof(Index));
         }
     }
